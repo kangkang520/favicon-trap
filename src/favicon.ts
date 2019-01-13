@@ -60,7 +60,7 @@ function parseLinkTag(uri: string, link: string, types: Array<string>): FavIcon 
 async function getFavIconFromHtml(uri: string, option: FaviconOption): Promise<Array<FavIcon>> {
 	return new Promise<Array<FavIcon>>(resolve => {
 		request.get(uri, { timeout: option.timeout, headers: option.headers }, (err, res, body: string) => {
-			if (err || !body || !body.match) resolve([])
+			if (err || !body || !body.match) return resolve([])
 			//获取所有link标签
 			const match = body.match(/<link[\s\S]+?>/g)
 			if (!match) return resolve([])
@@ -75,7 +75,7 @@ async function guessFavIcon(uri: string, option: FaviconOption): Promise<Array<F
 	//用于测试请求一个地址，请求成功返回地址否则返回空
 	const fetch = (uri: string) => new Promise<string | null>(resolve => {
 		request(uri, { timeout: option.timeout, headers: option.headers }, (err, res, body) => {
-			if (err || !body || !res.headers['content-type']) resolve(null)
+			if (err || !body || !res.headers['content-type']) return resolve(null)
 			if (/^image\//.test(res.headers['content-type']!)) resolve(uri)
 			else resolve(null)
 		})
